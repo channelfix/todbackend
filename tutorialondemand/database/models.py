@@ -5,17 +5,20 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 QUESTION_STATUS = (
-    (0, 'answered'),
-    (1, 'unanswered'),
-    (2, 'pending'),
+    ('0', 'answered'),
+    ('1', 'unanswered'),
+    ('2', 'pending'),
 )
 
 
 class Question(models.Model):
     user = models.ForeignKey(User)
-    status = models.CharField(max_length='11', choices=QUESTION_STATUS,
+    status = models.CharField(max_length=11, choices=QUESTION_STATUS,
                               default=1)
     text = models.CharField(max_length=100, blank=True, default='')
+
+    def __str__(self):
+        return self.text
 
 
 class Room(models.Model):
@@ -28,9 +31,9 @@ class Room(models.Model):
 
 
 class RequestAns(models.Model):
-    owner = models.ForeignKey(User, related_name='')
-    question = models.ForeignKey(Question)
-    status = models.CharField(max_length='11', choices=QUESTION_STATUS,
+    owner = models.ForeignKey(User, related_name='RequestAns')
+    question = models.ForeignKey(Question, related_name='RequestAns')
+    status = models.CharField(max_length=11, choices=QUESTION_STATUS,
                               default=1)
 
 
