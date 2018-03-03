@@ -23,5 +23,6 @@ router.register(r'question', views.QuestionList)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include(router.urls))
+    url(r'^', include(router.urls)),
+    url(r'^livestream/', include('database.urls')),
 ]

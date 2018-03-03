@@ -39,4 +39,5 @@ class RequestAns(models.Model):
 
 class Opentok(models.Model):
     access_token = models.CharField(max_length=1000)
-    owner = models.ForeignKey(User)
+    s_id = models.CharField(max_length=1000)
+
