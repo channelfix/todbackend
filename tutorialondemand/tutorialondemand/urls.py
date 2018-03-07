@@ -13,10 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
-from database import views
+from questions import views
 
 router = routers.DefaultRouter()
 router.register(r'question', views.QuestionList)
@@ -24,5 +24,5 @@ router.register(r'question', views.QuestionList)
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(router.urls)),
-    url(r'^livestream/', include('database.urls')),
+    url(r'^livestream/', include('livestream.urls')),
 ]

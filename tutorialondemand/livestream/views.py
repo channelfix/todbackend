@@ -2,20 +2,14 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from database.models import Opentok, Question, RequestAnswer, Room
-from database.serializers import OpentokSerializer, QuestionSerializer, RequestAnswerSerializer, RoomSerializer 
-from database.utils import OpenTokResource
+from livestream.models import Opentok
+from livestream.serializers import OpentokSerializer
+from livestream.utils import OpenTokResource
 
 
 # Create your views here.
-class QuestionList(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-
-
 class SessionView(APIView):
 
     def get(self, request, format=None):

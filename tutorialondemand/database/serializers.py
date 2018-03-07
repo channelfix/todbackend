@@ -1,27 +1,27 @@
 from rest_framework import serializers
-from models import Question, Room, RequestAns, Opentok
+from database.models import Question, Room, RequestAnswer, Opentok
 
 
 class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = ('user', 'status', 'text')
 
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = ('student', ' tutor', 'question', 'session_id', 'timestamp')
 
 
-class RequestAnsSerializer(serializers.ModelSerializer):
+class RequestAnswerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RequestAns
-        fields = '__all__'
+        model = RequestAnswer
+        fields = ('owner', 'question', 'status')
 
 
 class OpentokSerializer(serializers.ModelSerializer):
     class Meta:
         model = Opentok
-        fields = '__all__'
+        fields = ('access_token', 'session_id', 'api_key')
