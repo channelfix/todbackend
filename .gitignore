@@ -19,4 +19,4 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
-local_settings.pyc
+
