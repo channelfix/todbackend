@@ -16,13 +16,19 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
-from questions import views
+from questions import views as questionviews
+from categories import views as categoryviews
+from tutors import views as tutorviews
+
 
 router = routers.DefaultRouter()
-router.register(r'question', views.QuestionList)
+router.register(r'question', questionviews.QuestionList)
+router.register(r'category', categoryviews.CategoryList)
+router.register(r'tutor', tutorviews.TutorView)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(router.urls)),
     url(r'^livestream/', include('livestream.urls')),
+    url(r'^auth/', include('rest_framework_social_oauth2.urls')),
 ]
