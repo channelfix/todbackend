@@ -18,11 +18,11 @@ class TutorView(viewsets.ModelViewSet):
         data = request.data
         dataset = []
         for category in data['category']:
-            newtutor = {'user': data['user'],
-                        'category': category,
-                        'status': data['status']
-                        }
-            dataset.append(newtutor)
+            tutor = {'user': data['user'],
+                     'category': category,
+                     'status': data['status']
+                     }
+            dataset.append(tutor)
         serializer = TutorSerializer(data=dataset, many=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
