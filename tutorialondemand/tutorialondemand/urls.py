@@ -19,6 +19,7 @@ from rest_framework import routers
 from questions import views as questionviews
 from categories import views as categoryviews
 from tutors import views as tutorviews
+from login.views import register_by_access_token
 
 
 router = routers.DefaultRouter()
@@ -31,4 +32,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^livestream/', include('livestream.urls')),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+    url(r'^register-by-token/(?P<backend>[^/]+)/$', register_by_access_token)
 ]

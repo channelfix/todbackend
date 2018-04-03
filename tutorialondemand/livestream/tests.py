@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-null
 from __future__ import unicode_literals
 
 from django.test import TestCase
