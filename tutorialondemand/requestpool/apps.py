@@ -4,5 +4,5 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 
-class LivestreamConfig(AppConfig):
-    name = 'livestream'
+class RequestpoolConfig(AppConfig):
+    name = 'requestpool'

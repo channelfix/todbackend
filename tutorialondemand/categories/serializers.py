@@ -6,3 +6,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('text', 'id')
+
+
+class CategoryIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id',)

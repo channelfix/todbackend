@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from tutors.models import Tutor
+from requestpool.models import RequestPool
 
 # Register your models here.
-admin.site.register(Tutor)
+admin.site.register(RequestPool)

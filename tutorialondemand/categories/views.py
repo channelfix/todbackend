@@ -7,6 +7,6 @@ from rest_framework import viewsets
 
 
 # Create your views here.
-class CategoryList(viewsets.ModelViewSet):
+class CategoryList(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
