@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
 from django.db.models import Q
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework import viewsets
 
 from users.serializers import UserSerializer
-from categories.serializers import CategoryIdSerializer
 from random import randint
 from requestpool.models import RequestPool
 from requestpool.serializers import RequestPoolSerializer
@@ -74,35 +73,23 @@ class RequestPoolView(viewsets.ModelViewSet):
         data = serializer.data
         return Response(data)
 
-
-class RetrieveStudent(viewsets.ViewSet):
-    queryset = RequestPool.objects.all()
-
-    def list(self, request):
-        data = request.GET
-        myDict = {}
-        for key in data.iterkeys():
-            myDict = dict(data.iterlists())
-        dataset = []
-        for category in myDict['category']:
-            dataset.append({'id': category})
-
-        serializer = CategoryIdSerializer(dataset, many=True)
-        data = serializer.data
-
-        categories = []
-        for category_id in data:
-            categories.append(category_id['id'])
+    @list_route(methods=['get'], url_path='retrieve-student')
+    def retrieve_student(self, request):
+        data = request.GET.getlist('category')
 
         try:
-            query = Q(status=1) & Q(category__in=categories)
+            query = Q(status=1) & Q(category__in=data)
             student = RequestPool.objects.filter(query)
             count = student.count()
             random_index = randint(0, count - 1)
 
-            serial = RequestPoolSerializer(student[random_index])
-            print serial.data
+            serializer = RequestPoolSerializer(student[random_index])
+            data = serializer.data
+            user = User.objects.filter(id=data['user']).first()
+            serializer = UserSerializer(user, read_only=True)
+            data.update({'first_name': serializer.data['first_name'],
+                         'last_name': serializer.data['last_name']})
+            return Response(data)
 
-            return Response(serial.data)
-        except Exception:
-            return Response([])
+        except ValueError:
+            return Response({})

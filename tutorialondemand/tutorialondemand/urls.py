@@ -26,7 +26,6 @@ from login.views import register_by_access_token
 router = routers.DefaultRouter()
 router.register(r'category', category_views.CategoryList)
 router.register(r'request-pool', request_pool_views.RequestPoolView)
-router.register(r'retrieve-student', request_pool_views.RetrieveStudent)
 router.register(r'room', room_views.RoomView)
 router.register(r'u', user_views.UserView)
 

@@ -29,3 +29,6 @@ def register_by_access_token(request, backend):
             user = User.objects.get(username=user).id
             return HttpResponse(user)
         raise Http404("No User matches the given query.")
+
+    else:
+        raise Http404("GET method was received instead of POST.")
