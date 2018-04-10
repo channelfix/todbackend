@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import login
+from django.contrib.auth.models import User
+from django.http import Http404, HttpResponse
 
 from social_django.utils import psa
 from django.views.decorators.csrf import csrf_exempt
@@ -14,17 +16,17 @@ from django.views.decorators.csrf import csrf_exempt
 #       'register_by_access_token')
 
 
-@csrf_exempt 
+@csrf_exempt
 @psa('social:complete')
 def register_by_access_token(request, backend):
-    # This view expects an access_token GET parameter, if it's needed,
-    # request.backend and request.strategy will be loaded with the current
-    # backend and strategy.
 
-    token = request.POST.get('access_token')
-    user = request.backend.do_auth(token)
-    if user:
-        login(request, user)
-        return True
-    else:
-        return False
+    if request.method == 'POST':
+        token = request.POST.get('access_token')
+        user = request.backend.do_auth(token)
+
+        if user:
+            login(request, user)
+            user = User.objects.get(username=user).id
+            return HttpResponse(user)
+        raise Http404("No User matches the given query.")
+    raise Http404("GET method was received instead of POST.")
