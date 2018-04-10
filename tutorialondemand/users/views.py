@@ -19,5 +19,6 @@ class UserView(viewsets.ModelViewSet):
     def get_name(self, request, pk=None):
         instance = self.get_object()
         serializer = UserSerializer(instance)
-        data = "" + serializer.data['first_name'] + " " + serializer.data['last_name']
+        data = str(serializer.data['first_name'] +
+                   serializer.data['last_name'])
         return Response(data)

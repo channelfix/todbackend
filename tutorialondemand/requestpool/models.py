@@ -13,7 +13,6 @@ class RequestPool(models.Model):
         (0, 'Inactive'),
         (1, 'Waiting'),
         (2, 'Pending'),
-        (3, 'Ongoing'),
     )
 
     user = models.ForeignKey(User, related_name='request_pool')

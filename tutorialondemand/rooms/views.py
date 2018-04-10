@@ -33,8 +33,8 @@ class RoomView(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data['status'])
 
-    @detail_route(methods=['get'], url_path='create-token')
-    def create_token(self, request, pk=None):
+    @detail_route(methods=['get'], url_path='tutor-token')
+    def tutor_token(self, request, pk=None):
         instance = self.get_object()
         serializer = RoomSerializer(instance)
         session_id = serializer.data['session_id']
@@ -43,6 +43,21 @@ class RoomView(viewsets.ModelViewSet):
         data = {'session_id': session_id,
                 'APIKEY': APIKEY,
                 'token': token}
+        return Response(data)
+
+    @detail_route(methods=['get'], url_path='student-token')
+    def student_token(self, request, pk=None):
+        instance = self.get_object()
+        serializer = RoomSerializer(instance, data={'status': 2}, partial=True)
+        serializer.is_valid()
+        serializer.save()
+        session_id = serializer.data['session_id']
+        opentok = OpenTok(APIKEY, OPENTOKSECRETKEY)
+        token = opentok.generate_token(session_id)
+        data = {'session_id': session_id,
+                'APIKEY': APIKEY,
+                'token': token}
+
         return Response(data)
 
     @detail_route(methods=['get'], url_path='status-to-inactive')
@@ -54,8 +69,7 @@ class RoomView(viewsets.ModelViewSet):
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        data = serializer.data
-        return Response(data)
+        return Response(True)
 
     @detail_route(methods=['get'], url_path='status-to-waiting')
     def status_to_waiting(self, request, pk=None):
@@ -89,12 +103,13 @@ class RoomView(viewsets.ModelViewSet):
             room = Room.objects.filter(query).first()
             serializer = RoomSerializer(room)
             data = serializer.data
-            tutor = {}
-            tutor.update({'id': serializer.data['id']})
+            room_id = data['id']
             user = User.objects.filter(id=data['user_tutor']).first()
             serializer = UserSerializer(user, read_only=True)
-            tutor.update({'first_name': serializer.data['first_name'],
-                         'last_name': serializer.data['last_name']})
+            tutor = {}
+            tutor.update({'id': room_id,
+                          'first_name': serializer.data['first_name'],
+                          'last_name': serializer.data['last_name']})
             return Response(tutor)
         except KeyError:
             return Response({})

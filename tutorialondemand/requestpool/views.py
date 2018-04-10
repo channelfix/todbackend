@@ -30,8 +30,7 @@ class RequestPoolView(viewsets.ModelViewSet):
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        data = serializer.data
-        return Response(data)
+        return Response(True)
 
     @detail_route(methods=['get'], url_path='status-to-waiting')
     def status_to_waiting(self, request, pk=None):
@@ -77,12 +76,12 @@ class RequestPoolView(viewsets.ModelViewSet):
     def retrieve_student(self, request):
         data = request.GET.getlist('category')
 
-        try:
-            query = Q(status=1) & Q(category__in=data)
-            student = RequestPool.objects.filter(query)
-            count = student.count()
-            random_index = randint(0, count - 1)
+        query = Q(status=1) & Q(category__in=data)
+        student = RequestPool.objects.filter(query)
+        count = student.count()
 
+        try:
+            random_index = randint(0, count - 1)
             serializer = RequestPoolSerializer(student[random_index])
             data = serializer.data
             user = User.objects.filter(id=data['user']).first()
