@@ -11,7 +11,6 @@ from rest_framework import viewsets
 from opentok import OpenTok
 from rooms.models import Room
 from rooms.serializers import RoomSerializer
-from users.serializers import UserSerializer
 
 
 # Create your views here.
@@ -105,11 +104,11 @@ class RoomView(viewsets.ModelViewSet):
             data = serializer.data
             room_id = data['id']
             user = User.objects.filter(id=data['user_tutor']).first()
-            serializer = UserSerializer(user, read_only=True)
             tutor = {}
             tutor.update({'id': room_id,
-                          'first_name': serializer.data['first_name'],
-                          'last_name': serializer.data['last_name']})
+                          'user_tutor': user.id,
+                          'first_name': user.first_name,
+                          'last_name': user.last_name})
             return Response(tutor)
         except KeyError:
             return Response({})

@@ -7,7 +7,6 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-from users.serializers import UserSerializer
 from random import randint
 from requestpool.models import RequestPool
 from requestpool.serializers import RequestPoolSerializer
@@ -85,9 +84,8 @@ class RequestPoolView(viewsets.ModelViewSet):
             serializer = RequestPoolSerializer(student[random_index])
             data = serializer.data
             user = User.objects.filter(id=data['user']).first()
-            serializer = UserSerializer(user, read_only=True)
-            data.update({'first_name': serializer.data['first_name'],
-                         'last_name': serializer.data['last_name']})
+            data.update({'first_name': user.first_name,
+                         'last_name': user.last_name})
             return Response(data)
 
         except ValueError:

@@ -17,7 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
 from categories import views as category_views
-from users import views as user_views
+from ratings import views as rating_views
 from requestpool import views as request_pool_views
 from rooms import views as room_views
 from login.views import register_by_access_token
@@ -27,7 +27,7 @@ router = routers.DefaultRouter()
 router.register(r'category', category_views.CategoryList)
 router.register(r'request-pool', request_pool_views.RequestPoolView)
 router.register(r'room', room_views.RoomView)
-router.register(r'u', user_views.UserView)
+router.register(r'rating', rating_views.RatingView)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
