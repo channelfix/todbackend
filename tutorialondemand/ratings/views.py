@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import viewsets
 from ratings.models import Rating
@@ -15,6 +16,10 @@ class RatingView(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         rate = Rating.objects.filter(user=data['user']).first()
+
+        if rate is None:
+            raise Http404("No User matches the given query.")
+
         current_rating = float(data['rating'])
         new_no_of_ratings = rate.no_of_ratings + 1
         new_rating = ((rate.rating * (rate.no_of_ratings)) + current_rating) / (new_no_of_ratings)
