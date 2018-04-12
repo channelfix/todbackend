@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
-
 from social_django.models import UserSocialAuth
 from social_django.utils import psa
 
@@ -14,21 +13,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-# Define an URL entry to point to this view, call it passing the
-# access_token parameter like ?access_token=<token>. The URL entry must
-# contain the backend, like this:
-#
-#   url(r'^register-by-token/(?P<backend>[^/]+)/$',
-#       'register_by_access_token')
-
-
+@api_view(['GET', 'POST'])
 @csrf_exempt
 @psa('social:complete')
 def register_by_access_token(request, backend):
 
     if request.method == 'GET':
         raise Http404("GET method was received instead of POST.")
-
     token = request.POST.get('access_token')
     user = request.backend.do_auth(token)
 
@@ -37,7 +28,6 @@ def register_by_access_token(request, backend):
 
     login(request, user)
     user = User.objects.filter(username=user).first()
-    date_joined = user.date_joined
     avatar = UserSocialAuth.objects.filter(user_id=user.id).first().uid
     rating, created = Rating.objects.get_or_create(
         user=user,
@@ -52,6 +42,6 @@ def register_by_access_token(request, backend):
                'email': user.email,
                'avatar': 'https://avatars.io/facebook/' + avatar,
                'rating': rating.rating,
-               'date_joined': date_joined
+               'date_joined': user.date_joined
                }
     return Response(profile)

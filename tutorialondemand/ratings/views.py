@@ -15,8 +15,9 @@ class RatingView(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         rate = Rating.objects.filter(user=data['user']).first()
+        current_rating = float(data['rating'])
         new_no_of_ratings = rate.no_of_ratings + 1
-        new_rating = ((rate.rating * (rate.no_of_ratings)) + data['rating']) / (new_no_of_ratings)
+        new_rating = ((rate.rating * (rate.no_of_ratings)) + current_rating) / (new_no_of_ratings)
         rate.rating = new_rating
         rate.no_of_ratings = new_no_of_ratings
         rate.save(update_fields=['rating', 'no_of_ratings'])

@@ -11,6 +11,7 @@ from random import randint
 from requestpool.models import RequestPool
 from requestpool.serializers import RequestPoolSerializer
 
+from social_django.models import UserSocialAuth
 
 # Create your views here.
 
@@ -43,22 +44,6 @@ class RequestPoolView(viewsets.ModelViewSet):
         data = serializer.data
         return Response(data)
 
-    @detail_route(methods=['get'], url_path='status-to-pending')
-    def status_to_pending(self, request, pk=None):
-        instance = self.get_object()
-        serializer = RequestPoolSerializer(instance,
-                                           data={'status': 2},
-                                           partial=True)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        data = serializer.data
-        user = User.objects.get(id=data['user'])
-        serializer = UserSerializer(user, read_only=True)
-        data.update({'first_name': serializer.data['first_name'],
-                     'last_name': serializer.data['last_name']})
-        return Response(data)
-
     @detail_route(methods=['get'], url_path='status-to-ongoing')
     def status_to_ongoing(self, request, pk=None):
         instance = self.get_object()
@@ -84,8 +69,10 @@ class RequestPoolView(viewsets.ModelViewSet):
             serializer = RequestPoolSerializer(student[random_index])
             data = serializer.data
             user = User.objects.filter(id=data['user']).first()
+            avatar = UserSocialAuth.objects.filter(user_id=user.id).first().uid
             data.update({'first_name': user.first_name,
-                         'last_name': user.last_name})
+                         'last_name': user.last_name,
+                         'avatar': 'https://avatars.io/facebook/' + avatar})
             return Response(data)
 
         except ValueError:

@@ -20,6 +20,7 @@ from categories import views as category_views
 from ratings import views as rating_views
 from requestpool import views as request_pool_views
 from rooms import views as room_views
+from search import views as search_views
 from login.views import register_by_access_token
 
 
@@ -33,5 +34,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(router.urls)),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
-    url(r'^register-by-token/(?P<backend>[^/]+)/$', register_by_access_token)
+    url(r'^register-by-token/(?P<backend>[^/]+)/$', register_by_access_token),
+    url(r'^users/$', search_views.SearchListView.as_view()),
 ]

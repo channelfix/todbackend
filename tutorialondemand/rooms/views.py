@@ -12,6 +12,8 @@ from opentok import OpenTok
 from rooms.models import Room
 from rooms.serializers import RoomSerializer
 
+from social_django.models import UserSocialAuth
+
 
 # Create your views here.
 class RoomView(viewsets.ModelViewSet):
@@ -104,11 +106,13 @@ class RoomView(viewsets.ModelViewSet):
             data = serializer.data
             room_id = data['id']
             user = User.objects.filter(id=data['user_tutor']).first()
+            avatar = UserSocialAuth.objects.filter(user_id=user.id).first().uid
             tutor = {}
             tutor.update({'id': room_id,
                           'user_tutor': user.id,
                           'first_name': user.first_name,
-                          'last_name': user.last_name})
+                          'last_name': user.last_name,
+                          'avatar': 'https://avatars.io/facebook/' + avatar})
             return Response(tutor)
         except KeyError:
             return Response({})
