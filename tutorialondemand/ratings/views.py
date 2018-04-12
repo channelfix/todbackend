@@ -31,4 +31,8 @@ class RatingView(viewsets.ModelViewSet):
     def list(self, request):
         data = request.GET
         rate = Rating.objects.filter(user=data['user']).first()
+
+        if rate is None:
+            raise Http404("No User matches the given query.")
+
         return Response(rate.rating)
