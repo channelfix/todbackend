@@ -22,38 +22,36 @@ from rest_framework.response import Response
 #       'register_by_access_token')
 
 
-@api_view(['GET', 'POST', ])
 @csrf_exempt
 @psa('social:complete')
 def register_by_access_token(request, backend):
 
-    if request.method == 'POST':
-        token = request.POST.get('access_token')
-        user = request.backend.do_auth(token)
+    if request.method == 'GET':
+        raise Http404("GET method was received instead of POST.")
 
-        if user:
-            login(request, user)
-            user = User.objects.filter(username=user).first()
-            user_id = user.id
-            first_name = user.first_name
-            last_name = user.last_name
-            email = user.email
-            avatar = UserSocialAuth.objects.filter(user_id=user_id).first().uid
-            rating, created = Rating.objects.get_or_create(
-                user=user,
-                defaults={
-                    'rating': 0,
-                    'no_of_ratings': 0
-                })
+    token = request.POST.get('access_token')
+    user = request.backend.do_auth(token)
 
-            profile = {'user_id': user_id,
-                       'first_name': first_name,
-                       'last_name': last_name,
-                       'email': email,
-                       'avatar': 'https://avatars.io/facebook/' + avatar,
-                       'rating': rating.rating
-                       }
-            print profile
-            return Response(profile)
+    if user is None:
         raise Http404("No User matches the given query.")
-    raise Http404("GET method was received instead of POST.")
+
+    login(request, user)
+    user = User.objects.filter(username=user).first()
+    date_joined = user.date_joined
+    avatar = UserSocialAuth.objects.filter(user_id=user.id).first().uid
+    rating, created = Rating.objects.get_or_create(
+        user=user,
+        defaults={
+            'rating': 0,
+            'no_of_ratings': 0
+        })
+
+    profile = {'user_id': user.id,
+               'first_name': user.first_name,
+               'last_name': user.last_name,
+               'email': user.email,
+               'avatar': 'https://avatars.io/facebook/' + avatar,
+               'rating': rating.rating,
+               'date_joined': date_joined
+               }
+    return Response(profile)
